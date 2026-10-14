@@ -39,6 +39,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
     sources: List[Dict[str, str]]
+    tokens: Dict[str, int] = Field(default_factory=lambda: {"total_tokens": 0, "prompt_tokens": 0, "completion_tokens": 0})
+    session_id: str
 
 class LeadRequest(BaseModel):
     name: str = Field(..., description="Имя контактного лица")
@@ -122,14 +124,93 @@ def health_check():
         "knowledge_items_count": len(rag_engine.knowledge_base)
     }
 
+SESSIONS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "sessions.json")
+
+def load_sessions() -> List[Dict[str, Any]]:
+    if os.path.exists(SESSIONS_FILE):
+        try:
+            with open(SESSIONS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def save_session_turn(session_id: str, user_msg: str, bot_reply: str, sources: List[Dict[str, str]], tokens: Dict[str, int]):
+    os.makedirs(os.path.dirname(SESSIONS_FILE), exist_ok=True)
+    sessions = load_sessions()
+    now_iso = datetime.datetime.now().isoformat()
+    
+    session = None
+    for s in sessions:
+        if s.get("session_id") == session_id:
+            session = s
+            break
+            
+    if not session:
+        session = {
+            "session_id": session_id,
+            "created_at": now_iso,
+            "updated_at": now_iso,
+            "total_tokens": 0,
+            "messages_count": 0,
+            "messages": []
+        }
+        sessions.append(session)
+        
+    session["updated_at"] = now_iso
+    session["total_tokens"] = session.get("total_tokens", 0) + tokens.get("total_tokens", 0)
+    
+    session["messages"].append({
+        "role": "user",
+        "content": user_msg,
+        "timestamp": now_iso
+    })
+    session["messages"].append({
+        "role": "assistant",
+        "content": bot_reply,
+        "timestamp": now_iso,
+        "tokens": tokens,
+        "sources": sources
+    })
+    session["messages_count"] = len(session["messages"])
+    
+    if len(sessions) > 500:
+        sessions = sessions[-500:]
+        
+    try:
+        with open(SESSIONS_FILE, "w", encoding="utf-8") as f:
+            json.dump(sessions, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[Error saving sessions]: {e}")
+
 @app.post("/api/chat", response_model=ChatResponse)
 def chat_endpoint(request: ChatRequest, authenticated: bool = Depends(check_auth)):
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="Сообщение не может быть пустым")
 
+    session_id = request.session_id or f"sess_{int(datetime.datetime.now().timestamp())}_{os.urandom(3).hex()}"
     history_dicts = [{"role": m.role, "content": m.content} for m in request.history]
-    reply, sources = rag_engine.generate_response(request.message, history=history_dicts)
-    return ChatResponse(response=reply, sources=sources)
+    reply, sources, tokens = rag_engine.generate_response(request.message, history=history_dicts)
+    save_session_turn(session_id, request.message, reply, sources, tokens)
+    return ChatResponse(response=reply, sources=sources, tokens=tokens, session_id=session_id)
+
+@app.get("/api/sessions")
+def get_sessions(authenticated: bool = Depends(check_auth)):
+    """Просмотр всех сессий и диалогов пользователей с расходом токенов"""
+    sessions = load_sessions()
+    sessions.sort(key=lambda x: x.get("updated_at", ""), reverse=True)
+    return sessions
+
+@app.delete("/api/sessions")
+def clear_sessions(authenticated: bool = Depends(check_auth)):
+    """Очистка сессий (для администратора)"""
+    if os.path.exists(SESSIONS_FILE):
+        try:
+            with open(SESSIONS_FILE, "w", encoding="utf-8") as f:
+                json.dump([], f)
+        except Exception:
+            pass
+    return {"status": "success", "message": "История сессий очищена"}
 
 @app.post("/api/lead")
 def lead_endpoint(lead: LeadRequest, authenticated: bool = Depends(check_auth)):

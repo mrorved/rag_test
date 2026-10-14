@@ -148,6 +148,7 @@
       <span id="auth-user-label">Авторизован как: admin</span>
     </div>
     <div class="auth-actions">
+      <button class="btn-sessions" id="btn-show-sessions" style="background:#2563eb; border-color:#2563eb; color:#fff; font-weight:500;">💬 Все сессии и диалоги</button>
       <button class="btn-leads" id="btn-show-leads">📋 Заявки клиентов (Лиды)</button>
       <button id="btn-logout">Выйти</button>
     </div>
@@ -225,6 +226,25 @@
       </div>
       <div class="leads-content" id="leads-list">
         Загрузка...
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно просмотра всех сессий и диалогов -->
+  <div id="sessions-overlay" class="hidden">
+    <div class="leads-modal" style="max-width: 850px;">
+      <div class="leads-header" style="background: #1e293b;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h3>История всех сессий и диалогов</h3>
+          <span id="sessions-stats" style="font-size:12px; background:#334155; padding:2px 8px; border-radius:12px; color:#cbd5e1;"></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button id="btn-clear-sessions" style="background:#dc2626; border:none; color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Очистить</button>
+          <button id="btn-close-sessions" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">&times;</button>
+        </div>
+      </div>
+      <div class="leads-content" id="sessions-list">
+        Загрузка диалогов...
       </div>
     </div>
   </div>
@@ -328,6 +348,79 @@
     });
 
     btnCloseLeads.addEventListener("click", () => leadsOverlay.classList.add("hidden"));
+
+    // Просмотр всех сессий и диалогов
+    const sessionsOverlay = document.getElementById("sessions-overlay");
+    const btnShowSessions = document.getElementById("btn-show-sessions");
+    const btnCloseSessions = document.getElementById("btn-close-sessions");
+    const sessionsList = document.getElementById("sessions-list");
+    const sessionsStats = document.getElementById("sessions-stats");
+    const btnClearSessions = document.getElementById("btn-clear-sessions");
+
+    async function loadSessions() {
+      sessionsList.innerHTML = "Загрузка...";
+      try {
+        const resp = await fetch("/api/sessions");
+        if (!resp.ok) throw new Error("Требуется авторизация");
+        const sessions = await resp.json();
+        
+        if (!sessions || sessions.length === 0) {
+          sessionsList.innerHTML = "<p>Пока нет сохраненных сессий. Пообщайтесь с консультантом в чате справа снизу!</p>";
+          sessionsStats.innerText = "Сессий: 0 | Токенов: 0";
+          return;
+        }
+
+        const totalTokensAll = sessions.reduce((acc, s) => acc + (s.total_tokens || 0), 0);
+        sessionsStats.innerText = `Сессий: ${sessions.length} | Всего токенов: ${totalTokensAll.toLocaleString()}`;
+
+        sessionsList.innerHTML = sessions.map((sess, idx) => `
+          <div class="lead-item" style="border-left: 4px solid #2563eb;">
+            <div class="lead-meta">
+              <span><b>Сессия #${sessions.length - idx}</b> <code style="font-size:11px; background:#e2e8f0; padding:2px 4px; border-radius:4px;">${sess.session_id}</code></span>
+              <span style="color:#2563eb; font-weight:600;">⚡ ${sess.total_tokens || 0} токенов</span>
+            </div>
+            <div style="font-size:12px; color:#64748b; margin-bottom:8px;">
+              Время обновления: ${new Date(sess.updated_at).toLocaleString()} | Сообщений: ${sess.messages_count || sess.messages.length}
+            </div>
+            <details style="margin-top:6px;">
+              <summary style="cursor:pointer; color:#2563eb; font-weight:500;">Развернуть диалог (${sess.messages.length} реплик)</summary>
+              <div style="background:#fff; padding:12px; border-radius:8px; margin-top:8px; font-size:13px; border:1px solid #cbd5e1; display:flex; flex-direction:column; gap:8px;">
+                ${sess.messages.map(m => `
+                  <div style="padding:8px 10px; border-radius:6px; background:${m.role === 'user' ? '#f1f5f9' : '#eff6ff'}; border-left:3px solid ${m.role === 'user' ? '#94a3b8' : '#3b82f6'};">
+                    <div style="font-size:11px; color:#64748b; margin-bottom:2px; display:flex; justify-content:space-between;">
+                      <b>${m.role === 'user' ? 'Посетитель' : 'Инженер-консультант'}</b>
+                      <span>${m.tokens && m.tokens.total_tokens ? `⚡ ${m.tokens.total_tokens} токенов` : ''}</span>
+                    </div>
+                    <div>${m.content}</div>
+                    ${m.sources && m.sources.length ? `
+                      <div style="margin-top:6px; font-size:11px; color:#475569;">
+                        <b>Источники:</b> ${m.sources.map(s => `<a href="${s.url}" target="_blank" style="color:#2563eb; margin-right:8px;">${s.title}</a>`).join('')}
+                      </div>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </details>
+          </div>
+        `).join("");
+      } catch (err) {
+        sessionsList.innerHTML = "<p style='color:red;'>Ошибка загрузки сессий: " + err.message + "</p>";
+      }
+    }
+
+    btnShowSessions.addEventListener("click", () => {
+      sessionsOverlay.classList.remove("hidden");
+      loadSessions();
+    });
+
+    btnCloseSessions.addEventListener("click", () => sessionsOverlay.classList.add("hidden"));
+
+    btnClearSessions.addEventListener("click", async () => {
+      if (confirm("Вы уверены, что хотите удалить всю историю сессий?")) {
+        await fetch("/api/sessions", { method: "DELETE" });
+        loadSessions();
+      }
+    });
 
     checkAuthStatus();
   </script>

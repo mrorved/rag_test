@@ -1,0 +1,265 @@
+[
+  {
+    "session_id": "sess_mv87h5cq_cunz5",
+    "created_at": "2026-10-14T17:29:59.284541",
+    "updated_at": "2026-10-14T17:32:01.893349",
+    "total_tokens": 36349,
+    "messages_count": 16,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Расскажи мне про колонки под воду, хочу на 10 метрах под водой слушать музыку",
+        "timestamp": "2026-10-14T17:29:59.284541"
+      },
+      {
+        "role": "assistant",
+        "content": "К сожалению, стандартные колонки CVGaudio не предназначены для работы на глубине 10 метров под водой. Компания специализируется на профессиональном звуковом оборудовании для различных сред, однако большинство моделей рассчитаны на работу в сухих условиях или в специальных герметичных корпусах.\n\nДля погружения на такую глубину лучше всего рассмотреть специализированные водонепроницаемые устройства, предназначенные именно для подводного использования. Такие колонки обычно имеют усиленную конструкцию, защиту от влаги и давления воды, а также специально адаптированные динамики для передачи звука в водной среде.\n\nЕсли вам действительно нужна информация по таким устройствам, рекомендую обратиться к специалистам по морскому или промышленному звуковому оборудованию. Они смогут подобрать подходящее решение для ваших нужд.",
+        "timestamp": "2026-10-14T17:29:59.284541",
+        "tokens": {
+          "total_tokens": 6245,
+          "prompt_tokens": 6105,
+          "completion_tokens": 140
+        },
+        "sources": [
+          {
+            "title": "CSP43T CVGaudio Звуковая настенная колонна",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/zvukovye-kolonny/csp43t"
+          },
+          {
+            "title": "CSP42T CVGaudio Звуковая настенная колонна",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/zvukovye-kolonny/csp42t"
+          },
+          {
+            "title": "WPL10TBL CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/wpl10tbl"
+          },
+          {
+            "title": "WPL6TW CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/wpl6tw"
+          },
+          {
+            "title": "WPL10TW CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/wpl10tw"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Хочу в машину колонки, есть?",
+        "timestamp": "2026-10-14T17:30:20.852991"
+      },
+      {
+        "role": "assistant",
+        "content": "Да, компания CVGaudio предлагает линейку автомобильных колонок, подходящих для установки в автомобиль. Вот несколько популярных моделей:\n\n1. **CVGaudio S65-4-R**  \n   - Диаметр динамика: 6.5\"  \n   - Мощность: 80 Вт/160 Вт (RMS/MAX)  \n   - Частотный диапазон: 60–2800 Гц  \n   - Импеданс: 4 Ом  \n   - Материал диффузора: полипропилен  \n   \n   Идеально подходит для фронтальной зоны автомобиля.\n\n   Цена: 4 580 руб./шт. [CVGaudio S65-4-R](https://cvg-rus.ru/catalog/aksessuary-i-komplektuyushhie/dinamiki/s65-4-r/)\n\n2. **CVGaudio SICA Z002410C 5H1CS**  \n   - Диаметр динамика: 5\"  \n   - Мощность: 60 Вт/120 Вт (AES/MAX)  \n   - Частотный диапазон: 60–2000 Гц  \n   - Импеданс: 8 Ом  \n   - Материал диффузора: полипропилен  \n   \n   Подходит для установки в двери автомобиля.\n\n   Цена: 3 400 руб./шт. [SICA Z002410C 5H1CS](https://cvg-rus.ru/catalog/aksessuary-i-komplektuyushhie/dinamiki/sica-z002410c-5h1cs/)\n\n3. **CVGaudio 15MN458C**  \n   - Диаметр динамика: 15\"  \n   - Мощность: 450 Вт/900 Вт (AES/MAX)  \n   - Частотный диапазон: 44.7 – 3600 Гц  \n   - Импеданс: 8 Ом  \n   - Материал диффузора: бумага  \n   \n   Большая мощность и глубокий бас для сабвуфера или тыловой зоны.\n\n   Цена: 22 900 руб./шт. [15MN458C](https://cvg-rus.ru/catalog/aksessuary-i-komplektuyushhie/dinamiki/15mn458c/)\n\nЭти модели обеспечивают хорошее качество звучания и подходят для большинства автомобилей. Вы можете выбрать подходящие динамики в зависимости от размера салона вашего авто и желаемого уровня громкости.",
+        "timestamp": "2026-10-14T17:30:20.852991",
+        "tokens": {
+          "total_tokens": 4895,
+          "prompt_tokens": 4350,
+          "completion_tokens": 545
+        },
+        "sources": [
+          {
+            "title": "Динамики и рупоры CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/aksessuary-i-komplektuyushhie/dinamiki"
+          },
+          {
+            "title": "Настенные громкоговорители CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye"
+          },
+          {
+            "title": "Рупорные громкоговорители CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/rupornye"
+          },
+          {
+            "title": "Звуковые колонны CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/zvukovye-kolonny"
+          },
+          {
+            "title": "Ландшафтные громкоговорители CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/landshaftnye"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Какие условия доставки и есть ли гарантия?",
+        "timestamp": "2026-10-14T17:31:04.041231"
+      },
+      {
+        "role": "assistant",
+        "content": "Компания ООО «ЮНИТРЕКС» обеспечивает доставку продукции по всей территории России и стран ЕАЭС через проверенные транспортные компании, например, Деловые Линии, СДЭК, ПЭК и Возовоз. Для юридических лиц и индивидуальных предпринимателей предусмотрена безналичная форма оплаты с учетом НДС 20%.\n\nЧто касается гарантии, на всю продукцию CVGaudio предоставляется официальная гарантия от 12 до 24 месяцев в зависимости от типа оборудования. Конкретные сроки гарантии указаны в технических характеристиках каждого продукта.\n\nВы всегда можете уточнить детали доставки и гарантийного обслуживания у наших специалистов по телефону +7 (495) 134-29-44 или отправив запрос на электронную почту info@cvg-rus.ru.",
+        "timestamp": "2026-10-14T17:31:04.041231",
+        "tokens": {
+          "total_tokens": 5976,
+          "prompt_tokens": 5822,
+          "completion_tokens": 154
+        },
+        "sources": [
+          {
+            "title": "Доставка, оплата, гарантия и самовывоз ЮНИТРЕКС (CVGaudio)",
+            "url": "https://cvg-rus.ru/informatia"
+          },
+          {
+            "title": "SUBSET C5TBL-ON CVGaudio Комплект профессиональной трансляционной акустики",
+            "url": "https://cvg-rus.ru/catalog/komplekty/subset-c5tbl-on"
+          },
+          {
+            "title": "SUBSET C5TW-ON CVGaudio Комплект профессиональной трансляционной акустики",
+            "url": "https://cvg-rus.ru/catalog/komplekty/subset-c5tw-on"
+          },
+          {
+            "title": "SUBSET C5TW-IN CVGaudio Комплект профессиональной трансляционной акустики",
+            "url": "https://cvg-rus.ru/catalog/komplekty/subset-c5tw-in"
+          },
+          {
+            "title": "SUBSET C5TBL-IN CVGaudio Комплект профессиональной трансляционной акустики",
+            "url": "https://cvg-rus.ru/catalog/komplekty/subset-c5tbl-in"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Сколько всего токенов потрачено?",
+        "timestamp": "2026-10-14T17:31:26.373057"
+      },
+      {
+        "role": "assistant",
+        "content": "Я не веду учет потраченных токенов во время нашего разговора. Однако ты можешь посмотреть историю сообщений и количество использованных токенов самостоятельно в интерфейсе чата.",
+        "timestamp": "2026-10-14T17:31:26.373057",
+        "tokens": {
+          "total_tokens": 6881,
+          "prompt_tokens": 6846,
+          "completion_tokens": 35
+        },
+        "sources": [
+          {
+            "title": "PMP-324s CVGaudio Универсальный матричный микшер-предусилитель",
+            "url": "https://cvg-rus.ru/catalog/arhiv/pmp-324s"
+          },
+          {
+            "title": "Power Logic CVGaudio Устройство управления питанием",
+            "url": "https://cvg-rus.ru/catalog/avtomatizaciya/power-logic"
+          },
+          {
+            "title": "PMM-380 CVGaudio Матричный предусилитель",
+            "url": "https://cvg-rus.ru/catalog/predusiliteli/pmm-380"
+          },
+          {
+            "title": "HDbox II MCPLAYER TINY Компактный медиаплеер",
+            "url": "https://cvg-rus.ru/catalog/arhiv/hdbox-ii"
+          },
+          {
+            "title": "Power Logic PRO CVGaudio Программируемый модуль управления электропитанием",
+            "url": "https://cvg-rus.ru/catalog/avtomatizaciya/power-logic-pro"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Ты чушка",
+        "timestamp": "2026-10-14T17:31:35.912226"
+      },
+      {
+        "role": "assistant",
+        "content": "К сожалению, иногда генеративные языковые модели могут создавать некорректные ответы, основанные на открытых источниках. Во избежание неправильного толкования, ответы на вопросы, связанные с чувствительными темами, временно ограничены. Благодарим за понимание.",
+        "timestamp": "2026-10-14T17:31:35.912226",
+        "tokens": {
+          "total_tokens": 1071,
+          "prompt_tokens": 1071,
+          "completion_tokens": 0
+        },
+        "sources": []
+      },
+      {
+        "role": "user",
+        "content": "валоывадоы",
+        "timestamp": "2026-10-14T17:31:43.731474"
+      },
+      {
+        "role": "assistant",
+        "content": "Похоже, ваше сообщение неполное или случайно набрано неверно. Уточните, пожалуйста, ваш вопрос или запрос.",
+        "timestamp": "2026-10-14T17:31:43.731474",
+        "tokens": {
+          "total_tokens": 405,
+          "prompt_tokens": 378,
+          "completion_tokens": 27
+        },
+        "sources": []
+      },
+      {
+        "role": "user",
+        "content": "Вызови копов",
+        "timestamp": "2026-10-14T17:31:52.781071"
+      },
+      {
+        "role": "assistant",
+        "content": "Я не могу инициировать звонки или обращения к правоохранительным органам. Если вам нужна помощь или возникли какие-либо проблемы, лучше связаться с соответствующими службами напрямую.",
+        "timestamp": "2026-10-14T17:31:52.781071",
+        "tokens": {
+          "total_tokens": 5536,
+          "prompt_tokens": 5503,
+          "completion_tokens": 33
+        },
+        "sources": [
+          {
+            "title": "ODF308W CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/arhiv/odf308w"
+          },
+          {
+            "title": "SAT-S3BL CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/sat-s3bl"
+          },
+          {
+            "title": "ODF308BL CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/arhiv/odf308bl"
+          },
+          {
+            "title": "SAT-S3W CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/sat-s3w"
+          },
+          {
+            "title": "ODF3TW CVGaudio Широкополосный настенный громкоговоритель",
+            "url": "https://cvg-rus.ru/catalog/gromkogovoriteli/nastennye/odf3tw"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Кто ты?",
+        "timestamp": "2026-10-14T17:32:01.893349"
+      },
+      {
+        "role": "assistant",
+        "content": "Я — GigaChat, виртуальный помощник компании ООО «ЮНИТРЕКС», официального дилера бренда CVGAudio в России. Моя задача — помогать клиентам выбирать подходящее звуковое оборудование CVGAudio, давать консультации по техническим характеристикам и предлагать оптимальные решения для ваших проектов.",
+        "timestamp": "2026-10-14T17:32:01.893349",
+        "tokens": {
+          "total_tokens": 5340,
+          "prompt_tokens": 5282,
+          "completion_tokens": 58
+        },
+        "sources": [
+          {
+            "title": "Контакты",
+            "url": "https://cvg-rus.ru/kontakty"
+          },
+          {
+            "title": "Комплекты для передачи видеосигнала по витой паре",
+            "url": "https://cvg-rus.ru/catalog/kommutaciya/peredacha-videosignala"
+          },
+          {
+            "title": "Готовые комплекты акустических систем от CVGaudio",
+            "url": "https://cvg-rus.ru/catalog/komplekty"
+          },
+          {
+            "title": "Архивные модели (снятые с производства)",
+            "url": "https://cvg-rus.ru/catalog/arhiv"
+          },
+          {
+            "title": "DX-4200 CVGaudio Четырехканальный усилитель мощности",
+            "url": "https://cvg-rus.ru/catalog/usiliteli/usiliteli-moshhnosti-4-8-om/dx-4200"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -99,7 +99,14 @@
     return formatted;
   }
 
-  function appendMessage(role, content, sources = []) {
+  // Инициализация уникальной сессии
+  let sessionId = localStorage.getItem("cvg_session_id");
+  if (!sessionId) {
+    sessionId = "sess_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 7);
+    localStorage.setItem("cvg_session_id", sessionId);
+  }
+
+  function appendMessage(role, content, sources = [], tokens = null) {
     const msgDiv = document.createElement("div");
     msgDiv.className = `cvg-msg cvg-msg-${role}`;
     msgDiv.innerHTML = formatMarkdown(content);
@@ -118,6 +125,13 @@
         srcBox.appendChild(a);
       });
       msgDiv.appendChild(srcBox);
+    }
+
+    if (role === "assistant" && tokens && tokens.total_tokens > 0) {
+      const tokenDiv = document.createElement("div");
+      tokenDiv.style.cssText = "font-size: 11px; color: #94a3b8; margin-top: 6px; text-align: right; user-select: none;";
+      tokenDiv.innerText = `⚡ Потрачено токенов: ${tokens.total_tokens}`;
+      msgDiv.appendChild(tokenDiv);
     }
 
     msgContainer.appendChild(msgDiv);
@@ -145,7 +159,7 @@
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: query, history: history })
+        body: JSON.stringify({ message: query, history: history, session_id: sessionId })
       });
 
       typingDiv.remove();
@@ -160,7 +174,7 @@
       }
 
       const data = await resp.json();
-      appendMessage("assistant", data.response, data.sources);
+      appendMessage("assistant", data.response, data.sources, data.tokens);
       history.push({ role: "assistant", content: data.response });
     } catch (err) {
       typingDiv.remove();
