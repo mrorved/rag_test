@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CVGaudio - Демонстрация AI RAG Консультанта</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f6f8; color: #333; line-height: 1.6; }
+    
+    /* Верхняя полоса авторизации */
+    #auth-top-bar {
+      background: #111418;
+      color: #cbd5e1;
+      padding: 8px 24px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2d3748;
+    }
+    #auth-top-bar .auth-user { display: flex; align-items: center; gap: 8px; }
+    #auth-top-bar .auth-user .dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
+    #auth-top-bar .auth-actions { display: flex; gap: 12px; }
+    #auth-top-bar button {
+      background: none;
+      border: 1px solid #4a5568;
+      color: #e2e8f0;
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    #auth-top-bar button:hover { background: #2d3748; border-color: #718096; }
+    #auth-top-bar button.btn-leads { background: #d32f2f; border-color: #d32f2f; color: #fff; font-weight: 500; }
+    #auth-top-bar button.btn-leads:hover { background: #b71c1c; }
+
+    header { background: #1e1e24; color: #fff; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #d32f2f; }
+    header .logo { font-size: 22px; font-weight: bold; letter-spacing: 1px; color: #fff; }
+    header .logo span { color: #d32f2f; }
+    header .contacts { font-size: 14px; color: #a0aec0; }
+    header .contacts a { color: #fff; text-decoration: none; margin-left: 16px; font-weight: 500; }
+    
+    .hero { max-width: 1100px; margin: 40px auto; padding: 0 20px; text-align: center; }
+    .hero h1 { font-size: 32px; margin-bottom: 16px; color: #1a202c; }
+    .hero p { font-size: 17px; color: #4a5568; max-width: 750px; margin: 0 auto 30px; }
+    
+    .card-grid { max-width: 1100px; margin: 0 auto 60px; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+    .card h3 { color: #d32f2f; margin-bottom: 10px; font-size: 18px; }
+    .card p { font-size: 14px; color: #64748b; }
+    
+    .info-banner { max-width: 1100px; margin: 0 auto 40px; padding: 20px; background: #e2e8f0; border-radius: 10px; font-size: 14px; color: #334155; }
+    .info-banner code { background: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+
+    /* Модальное окно авторизации */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+    }
+    #login-overlay.hidden { display: none; }
+    
+    .login-box {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      border-top: 4px solid #d32f2f;
+    }
+    .login-box h2 { font-size: 20px; margin-bottom: 8px; color: #1e293b; }
+    .login-box p { font-size: 13.5px; color: #64748b; margin-bottom: 24px; }
+    .login-box .form-group { text-align: left; margin-bottom: 16px; }
+    .login-box label { font-size: 12.5px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
+    .login-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-box input:focus { border-color: #d32f2f; }
+    .login-box button.btn-submit {
+      width: 100%;
+      background: #d32f2f;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    .login-box button.btn-submit:hover { background: #b71c1c; }
+    .login-box .error-text { color: #dc2626; font-size: 12.5px; margin-top: 12px; display: none; }
+    .login-hint { margin-top: 18px; font-size: 12px; color: #94a3b8; background: #f8fafc; padding: 8px; border-radius: 6px; }
+
+    /* Модальное окно просмотра лидов */
+    #leads-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+    }
+    #leads-overlay.hidden { display: none; }
+    .leads-modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 90%;
+      max-width: 750px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .leads-header { padding: 16px 24px; background: #1e1e24; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+    .leads-header h3 { font-size: 16px; margin: 0; }
+    .leads-content { padding: 20px; overflow-y: auto; flex: 1; font-size: 13.5px; }
+    .lead-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+    .lead-item .lead-meta { font-weight: bold; color: #1e293b; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .lead-item .lead-phone { color: #d32f2f; }
+  </style>
+</head>
+<body>
+
+  <!-- Верхняя панель авторизации -->
+  <div id="auth-top-bar">
+    <div class="auth-user">
+      <span class="dot"></span>
+      <span id="auth-user-label">Авторизован как: admin</span>
+    </div>
+    <div class="auth-actions">
+      <button class="btn-leads" id="btn-show-leads">📋 Заявки клиентов (Лиды)</button>
+      <button id="btn-logout">Выйти</button>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo">CVG<span>audio</span> | ЮНИТРЕКС</div>
+    <div class="contacts">
+      <span>Москва: <a href="tel:+74951342944">+7 (495) 134-29-44</a></span>
+      <span>Email: <a href="mailto:info@cvg-rus.ru">info@cvg-rus.ru</a></span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Профессиональные системы фонового звука</h1>
+    <p>Оборудование трансляционного озвучивания и оповещения для ресторанов, фитнес-клубов, магазинов и кинотеатров.</p>
+  </div>
+
+  <div class="info-banner">
+    🤖 <b>Демонстрационный стенд RAG-консультанта:</b><br>
+    Нажмите на красную кнопку чата в правом нижнем углу экрана. Попробуйте задать технический вопрос (например: <i>«Какой усилитель посоветуешь для кафе 80 м²?»</i> или выберите один из стартовых вариантов).<br>
+    Бэкенд обращается к модели через <b>GigaChat API</b> и ищет информацию в базе данных оборудования.
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>📢 Громкоговорители</h3>
+      <p>Потолочные, настенные, подвесные и всепогодные акустические системы для 100V линий и низкоомного подключения.</p>
+    </div>
+    <div class="card">
+      <h3>🎛️ Микшер-усилители</h3>
+      <p>Трансляционные усилители мощности с независимым зонированием, встроенным Bluetooth/MP3/FM и микрофонными входами.</p>
+    </div>
+    <div class="card">
+      <h3>☕ Звук для ресторанов</h3>
+      <p>Типовые готовые комплекты звука для залов, открытых веранд и санитарных зон с независимой регулировкой громкости.</p>
+    </div>
+    <div class="card">
+      <h3>🛒 Озвучивание магазинов</h3>
+      <p>Равномерное музыкальное покрытие торговых залов и микрофонные пульты с приоритетом для объявлений персонала.</p>
+    </div>
+  </div>
+
+  <!-- Модальное окно логина -->
+  <div id="login-overlay" class="hidden">
+    <div class="login-box">
+      <h2>Вход в демо-стенд</h2>
+      <p>Для доступа к AI-консультанту и защите токенов введите логин и пароль:</p>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label>Логин:</label>
+          <input type="text" id="login-username" value="admin" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label>Пароль:</label>
+          <input type="password" id="login-password" value="cvgaudio2026" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-submit">Войти на стенд</button>
+        <div class="error-text" id="login-error">Неверный логин или пароль</div>
+      </form>
+
+      <div class="login-hint">
+        💡 По умолчанию: логин <b>admin</b>, пароль <b>cvgaudio2026</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно просмотра лидов -->
+  <div id="leads-overlay" class="hidden">
+    <div class="leads-modal">
+      <div class="leads-header">
+        <h3>Заявки от посетителей чата (Лиды)</h3>
+        <button id="btn-close-leads" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+      <div class="leads-content" id="leads-list">
+        Загрузка...
+      </div>
+    </div>
+  </div>
+
+  <!-- Логика авторизации -->
+  <script>
+    const loginOverlay = document.getElementById("login-overlay");
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const btnLogout = document.getElementById("btn-logout");
+    const authUserLabel = document.getElementById("auth-user-label");
+    const leadsOverlay = document.getElementById("leads-overlay");
+    const btnShowLeads = document.getElementById("btn-show-leads");
+    const btnCloseLeads = document.getElementById("btn-close-leads");
+    const leadsList = document.getElementById("leads-list");
+
+    // Проверка статуса при загрузке
+    async function checkAuthStatus() {
+      try {
+        const resp = await fetch("/api/auth/status");
+        const data = await resp.json();
+        if (data.auth_enabled && !data.authenticated) {
+          loginOverlay.classList.remove("hidden");
+        } else {
+          loginOverlay.classList.add("hidden");
+          if (data.username) {
+            authUserLabel.innerText = "Авторизован как: " + data.username;
+          }
+        }
+      } catch (err) {
+        console.error("Auth status check failed", err);
+      }
+    }
+
+    // Обработка логина
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.style.display = "none";
+      const u = document.getElementById("login-username").value.trim();
+      const p = document.getElementById("login-password").value.trim();
+
+      try {
+        const resp = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: u, password: p })
+        });
+
+        if (resp.ok) {
+          loginOverlay.classList.add("hidden");
+          checkAuthStatus();
+        } else {
+          loginError.style.display = "block";
+        }
+      } catch (err) {
+        loginError.innerText = "Ошибка сервера: " + err.message;
+        loginError.style.display = "block";
+      }
+    });
+
+    // Логаут
+    btnLogout.addEventListener("click", async () => {
+      await fetch("/api/auth/logout", { method: "POST" });
+      location.reload();
+    });
+
+    // Просмотр лидов
+    btnShowLeads.addEventListener("click", async () => {
+      leadsOverlay.classList.remove("hidden");
+      leadsList.innerHTML = "Загрузка...";
+      try {
+        const resp = await fetch("/api/leads");
+        if (!resp.ok) throw new Error("Требуется авторизация");
+        const leads = await resp.json();
+        if (!leads || leads.length === 0) {
+          leadsList.innerHTML = "<p>Пока нет ни одной заявки. Попробуйте нажать в чате 'Оставить заявку инженеру'!</p>";
+          return;
+        }
+
+        leadsList.innerHTML = leads.map((item, idx) => `
+          <div class="lead-item">
+            <div class="lead-meta">
+              <span>#${idx + 1} ${item.name} (${new Date(item.created_at).toLocaleString()})</span>
+              <span class="lead-phone">📞 ${item.phone}</span>
+            </div>
+            <div><b>Email:</b> ${item.email || "не указан"}</div>
+            <div><b>Комментарий:</b> ${item.comment || "—"}</div>
+            ${item.chat_history && item.chat_history.length > 0 ? `
+              <details style="margin-top:8px;">
+                <summary style="cursor:pointer; color:#2563eb;">Посмотреть историю переписки (${item.chat_history.length} сообщ.)</summary>
+                <div style="background:#fff; padding:10px; border-radius:6px; margin-top:6px; font-size:12px; border:1px solid #e2e8f0;">
+                  ${item.chat_history.map(m => `<b>${m.role === 'user' ? 'Клиент' : 'Бот'}:</b> ${m.content}<br>`).join('')}
+                </div>
+              </details>
+            ` : ''}
+          </div>
+        `).join("");
+      } catch (e) {
+        leadsList.innerHTML = "<p style='color:red;'>Ошибка загрузки заявок: " + e.message + "</p>";
+      }
+    });
+
+    btnCloseLeads.addEventListener("click", () => leadsOverlay.classList.add("hidden"));
+
+    checkAuthStatus();
+  </script>
+
+  <!-- Подключение виджета -->
+  <script src="/static/widget.js"></script>
+
+</body>
+</html>

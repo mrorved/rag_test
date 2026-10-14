@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  cvg-rag-assistant:
+    build: .
+    container_name: cvg-rag-assistant
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8005}:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-gigachat}
+      - GIGACHAT_CREDENTIALS=${GIGACHAT_CREDENTIALS:-}
+      - GIGACHAT_SCOPE=${GIGACHAT_SCOPE:-GIGACHAT_API_PERS}
+      - GIGACHAT_MODEL=${GIGACHAT_MODEL:-GigaChat-2}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY:-}
+      - AUTH_ENABLED=${AUTH_ENABLED:-true}
+      - AUTH_USERNAME=${AUTH_USERNAME:-admin}
+      - AUTH_PASSWORD=${AUTH_PASSWORD:-cvgaudio2026}
+      - PORT=${PORT:-8005}
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
